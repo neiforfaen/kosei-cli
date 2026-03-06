@@ -1,0 +1,42 @@
+{
+	"name": "kosei-cli",
+	"version": "1.0.0",
+	"description": "Regex-based env switcher for any configs.",
+	"main": "dist/cli.js",
+	"types": "dist/cli.d.ts",
+	"bin": {
+		"kosei": "dist/cli.js"
+	},
+	"files": [
+		"dist/cli.js"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"scripts": {
+		"dev": "tsx src/cli.ts",
+		"build": "tsup",
+		"test": "vitest run",
+		"test:coverage": "vitest run --coverage",
+		"biome:lint": "biome check .",
+		"biome:format": "biome check --write .",
+		"typecheck": "tsc --noEmit",
+		"release": "pnpm build && changeset publish",
+		"prepare": "husky"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.4.6",
+		"@changesets/cli": "^2.30.0",
+		"@types/node": "25.3.5",
+		"@vitest/coverage-v8": "4.0.18",
+		"husky": "^9.1.7",
+		"tsup": "8.5.1",
+		"tsx": "4.21.0",
+		"typescript": "5.9.3",
+		"vitest": "4.0.18"
+	},
+	"packageManager": "pnpm@10.13.1",
+	"engines": {
+		"node": ">=20"
+	}
+}
