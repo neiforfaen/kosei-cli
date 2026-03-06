@@ -1,5 +1,11 @@
 # kosei-cli
 
+## 1.1.1
+
+### Patch Changes
+
+- 64f835c: fix bug where successful switch is logged per number of files
+
 ## 1.1.0
 
 ### Minor Changes
