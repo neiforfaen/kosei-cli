@@ -180,6 +180,30 @@ describe("applyReplacement (via switchCommand)", () => {
 
 		expect(mockWriteFile).toHaveBeenCalledTimes(2)
 	})
+
+	it("logs success message after applying replacement", async () => {
+		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+		mockLoadKoseiConfig.mockResolvedValue(makeConfig())
+		mockReadFile.mockResolvedValue("FOO=old" as never)
+
+		await switchCommand(["dev"])
+
+		expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("dev"))
+	})
+
+	it("exits with 1 and logs error when applyReplacement throws", async () => {
+		const exitSpy = vi
+			.spyOn(process, "exit")
+			.mockImplementation((() => {}) as () => never)
+		const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {})
+		mockLoadKoseiConfig.mockResolvedValue(makeConfig())
+		mockReadFile.mockRejectedValue(new Error("disk error"))
+
+		await switchCommand(["dev"])
+
+		expect(exitSpy).toHaveBeenCalledWith(1)
+		expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("disk error"))
+	})
 })
 
 describe("previewReplacement (via --dry-run)", () => {
