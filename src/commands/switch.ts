@@ -77,7 +77,15 @@ const switchAction = async (config: Config, env: string, dryRun: boolean) => {
 		if (dryRun) {
 			previewReplacement(r)
 		} else {
-			await applyReplacement(r)
+			try {
+				await applyReplacement(r)
+				console.log(green(`Switched to "${bold(env)}" environment.`))
+			} catch (err) {
+				console.error(
+					red(`Error applying replacement: ${(err as Error).message}`),
+				)
+				process.exit(1)
+			}
 		}
 	}
 }
