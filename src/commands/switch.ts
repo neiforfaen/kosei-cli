@@ -79,7 +79,6 @@ const switchAction = async (config: Config, env: string, dryRun: boolean) => {
 		} else {
 			try {
 				await applyReplacement(r)
-				console.log(green(`Switched to "${bold(env)}" environment.`))
 			} catch (err) {
 				console.error(
 					red(`Error applying replacement: ${(err as Error).message}`),
@@ -102,6 +101,7 @@ export const switchCommand = async (args: string[]) => {
 	try {
 		const config = await loadKoseiConfig()
 		await switchAction(config, env, dryRun)
+		console.log(green(`Switched to "${bold(env)}" environment.`))
 	} catch (err) {
 		console.error(`Error switching environment: ${(err as Error).message}`)
 		process.exit(1)
