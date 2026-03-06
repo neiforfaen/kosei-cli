@@ -8,6 +8,8 @@ It applies named sets of regex replacements across your config files. Instead of
 
 Works on any text file — `.env`, JSON, YAML, TOML, XML, or anything else.
 
+https://github.com/user-attachments/assets/826b198f-fcd3-4848-b0b4-d33ae9bcb3dd
+
 ## Installation
 
 ```sh
