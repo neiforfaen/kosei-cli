@@ -181,14 +181,43 @@ describe("applyReplacement (via switchCommand)", () => {
 		expect(mockWriteFile).toHaveBeenCalledTimes(2)
 	})
 
-	it("logs success message after applying replacement", async () => {
+	it("logs success message exactly once after applying replacement", async () => {
 		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
 		mockLoadKoseiConfig.mockResolvedValue(makeConfig())
 		mockReadFile.mockResolvedValue("FOO=old" as never)
 
 		await switchCommand(["dev"])
 
-		expect(logSpy).toHaveBeenCalledWith(expect.stringContaining("dev"))
+		const successCalls = logSpy.mock.calls.filter((c) =>
+			String(c[0]).includes("dev"),
+		)
+		expect(successCalls).toHaveLength(1)
+	})
+
+	it("logs success message exactly once when multiple files are processed", async () => {
+		const logSpy = vi.spyOn(console, "log").mockImplementation(() => {})
+		const config: Config = {
+			environments: {
+				dev: {
+					replacements: [
+						{
+							files: ["a.env", "b.env", "c.env"],
+							regex: "/FOO=.*/",
+							value: "FOO=bar",
+						},
+					],
+				},
+			},
+		}
+		mockLoadKoseiConfig.mockResolvedValue(config)
+		mockReadFile.mockResolvedValue("FOO=old" as never)
+
+		await switchCommand(["dev"])
+
+		const successCalls = logSpy.mock.calls.filter((c) =>
+			String(c[0]).includes("dev"),
+		)
+		expect(successCalls).toHaveLength(1)
 	})
 
 	it("exits with 1 and logs error when applyReplacement throws", async () => {
