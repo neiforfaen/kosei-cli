@@ -202,9 +202,7 @@ describe("applyReplacement (via switchCommand)", () => {
 		await switchCommand(["dev"])
 
 		expect(exitSpy).toHaveBeenCalledWith(1)
-		expect(errorSpy).toHaveBeenCalledWith(
-			expect.stringContaining("disk error"),
-		)
+		expect(errorSpy).toHaveBeenCalledWith(expect.stringContaining("disk error"))
 	})
 })
 
