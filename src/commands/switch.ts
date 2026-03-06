@@ -5,7 +5,8 @@ import { type Config, loadKoseiConfig, type Replacement } from "../config"
 import { bold, dim, green, red, yellow } from "../format"
 
 const applyReplacement = async (replacement: Replacement) => {
-	const regex = new RegExp(replacement.regex.slice(1, -1), "g")
+	const regexFlag = replacement.regex.match(/^\/.*\/([gimsuy]*)$/)?.[1] || "g"
+	const regex = new RegExp(replacement.regex.slice(1, -1), regexFlag)
 
 	await Promise.all(
 		replacement.files.map(async (file) => {
@@ -18,7 +19,8 @@ const applyReplacement = async (replacement: Replacement) => {
 }
 
 const previewReplacement = (replacement: Replacement) => {
-	const regex = new RegExp(replacement.regex.slice(1, -1), "g")
+	const regexFlag = replacement.regex.match(/^\/.*\/([gimsuy]*)$/)?.[1] || "g"
+	const regex = new RegExp(replacement.regex.slice(1, -1), regexFlag)
 
 	for (const file of replacement.files) {
 		const absPath = resolve(process.cwd(), file)
