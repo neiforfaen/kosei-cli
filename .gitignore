@@ -1,34 +1,8 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
+/target
 
-# Build
-dist/
-*.tgz
 
-# Development
-/src/mocks/**/*
-kosei.config.json
+# Added by cargo
+#
+# already existing elements were commented out
 
-# Changesets
-.changeset/README.md
-
-# Testing
-coverage/
-*.log
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS
-.DS_Store
-Thumbs.db
-
-# Misc
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+#/target
