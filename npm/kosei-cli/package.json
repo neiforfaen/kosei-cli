@@ -18,12 +18,12 @@
     "typescript": "^6.0.3"
   },
   "optionalDependencies": {
-    "app-linux-x64": "2.0.0",
-    "app-linux-arm64": "2.0.0",
-    "app-darwin-x64": "2.0.0",
-    "app-darwin-arm64": "2.0.0",
-    "app-windows-x64": "2.0.0",
-    "app-windows-arm64": "2.0.0"
+    "kosei-cli-linux-x64": "2.0.0",
+    "kosei-cli-linux-arm64": "2.0.0",
+    "kosei-cli-darwin-x64": "2.0.0",
+    "kosei-cli-darwin-arm64": "2.0.0",
+    "kosei-cli-windows-x64": "2.0.0",
+    "kosei-cli-windows-arm64": "2.0.0"
   },
   "packageManager": "pnpm@10.33.1"
 }

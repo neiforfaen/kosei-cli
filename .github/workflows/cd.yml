@@ -16,13 +16,13 @@ jobs:
         build:
           - {
               NAME: linux-x64-glibc,
-              OS: ubuntu-20.04,
+              OS: ubuntu-22.04,
               TOOLCHAIN: stable,
               TARGET: x86_64-unknown-linux-gnu,
             }
           - {
               NAME: linux-arm64-glibc,
-              OS: ubuntu-20.04,
+              OS: ubuntu-22.04,
               TOOLCHAIN: stable,
               TARGET: aarch64-unknown-linux-gnu,
             }
@@ -83,15 +83,16 @@ jobs:
         run: |
           cd npm
           bin="kosei"
+          npm_pkg_prefix="kosei-cli"
           node_os=$(echo "${{ matrix.build.NAME }}" | cut -d '-' -f1)
           export node_os
           node_arch=$(echo "${{ matrix.build.NAME }}" | cut -d '-' -f2)
           export node_arch
           export node_version="${{ env.RELEASE_VERSION }}"
           if [ "${{ matrix.build.OS }}" = "windows-2022" ]; then
-            export node_pkg="${bin}-windows-${node_arch}"
+            export node_pkg="${npm_pkg_prefix}-windows-${node_arch}"
           else
-            export node_pkg="${bin}-${node_os}-${node_arch}"
+            export node_pkg="${npm_pkg_prefix}-${node_os}-${node_arch}"
           fi
           mkdir -p "${node_pkg}/bin"
           envsubst < package.json.tmpl > "${node_pkg}/package.json"
@@ -107,7 +108,7 @@ jobs:
   publish-npm-base:
     name: Publish the base NPM package
     needs: publish-npm-binaries
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout
         uses: actions/checkout@v6
