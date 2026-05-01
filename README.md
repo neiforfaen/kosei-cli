@@ -14,15 +14,21 @@ https://github.com/user-attachments/assets/826b198f-fcd3-4848-b0b4-d33ae9bcb3dd
 
 ## Installation
 
-### From source
+### pnpm (recommended)
 
 ```sh
-cargo install kosei-cli
+pnpm install -D kosei-cli
 ```
 
 ### Pre-built binaries
 
 Download from [GitHub Releases](https://github.com/neiforfaen/kosei-cli/releases).
+
+### From source
+
+```sh
+cargo build --release
+```
 
 ## Quick start
 
@@ -97,6 +103,27 @@ The `regex` field must be written as a regex literal string — pattern wrapped 
 Capture group references (`$1`, `$2`, etc.) work in `value`.
 
 ## Commands
+
+### `kosei init [path]`
+
+Scaffolds a new `kosei.yaml` in the given directory (defaults to the current directory):
+
+```sh
+kosei init
+kosei init path/to/project
+```
+
+Errors if a `kosei.yaml` already exists at that location.
+
+### `kosei migrate`
+
+Converts a legacy `kosei.config.json` to `kosei.yaml`:
+
+```sh
+kosei migrate
+```
+
+Walks up the directory tree from the current working directory to find `kosei.config.json`, converts it to `kosei.yaml`, and deletes the original JSON file.
 
 ### `kosei switch <env>`
 
@@ -200,9 +227,9 @@ environments:
    ```
 
    This will:
-   - Find `kosei.config.json` in your project
+   - Find `kosei.config.json` in your project (walking up the directory tree)
    - Convert it to `kosei.yaml` with the new format
-   - Validate the new config and report any errors
+   - Delete the original `kosei.config.json`
 
 2. **Review changes:**
    - Check the generated `kosei.yaml` for correctness
@@ -241,6 +268,6 @@ environments:
 ### What's improved
 
 - **Faster:** Rewritten in Rust for near-instant execution
-- **Better errors:** Validation errors include file, line, and column numbers
+- **Better errors:** Validation errors identify the environment name and replacement index where the problem occurred
 - **Safer:** No partial edits — all replacements succeed or all fail
 - **Easier to read:** YAML format is more human-friendly than JSON

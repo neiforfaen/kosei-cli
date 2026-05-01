@@ -4,8 +4,10 @@
 
 ### Major Changes
 
-- Rewritten in Rust. The binary is now distributed via `cargo install kosei-cli`.
+- Rewritten in Rust. The binary is still distributed via `npm install -D kosei-cli`.
 - Config file format changed from `kosei.config.json` (JSON) to `kosei.yaml` (YAML).
+- Added `kosei migrate` command to automatically convert `kosei.config.json` to `kosei.yaml`.
+- Added `kosei init` command to scaffold a new `kosei.yaml` in a given directory.
 
 ## 1.1.1
 
