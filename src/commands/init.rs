@@ -1,4 +1,5 @@
 use crate::KoseiError;
+use colored::Colorize;
 
 pub fn execute(path: &Option<String>) -> Result<(), KoseiError> {
     let target_path = path
@@ -28,6 +29,13 @@ pub fn execute(path: &Option<String>) -> Result<(), KoseiError> {
         KoseiError::FileWriteError(format!("cannot write kosei.yaml: {}", e), e.kind())
     })?;
 
-    println!("Initialized new kosei.yaml at {}", config_path.display());
+    println!(
+        "{}",
+        format!(
+            "{} {}",
+            "✓ kosei.yaml initialized @".green(),
+            config_path.display().to_string().bold()
+        )
+    );
     Ok(())
 }

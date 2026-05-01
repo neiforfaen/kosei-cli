@@ -1,6 +1,7 @@
 use crate::config::Config;
 use crate::error::KoseiError;
 use crate::replacer::{self, diff};
+use colored::Colorize;
 
 pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), KoseiError> {
     let env = config.environments.get(environment).ok_or_else(|| {
@@ -17,11 +18,6 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
         ))
     })?;
 
-    match &env.description {
-        Some(desc) => println!("Switching to '{}' — {}", environment, desc),
-        None => println!("Switching to '{}'", environment),
-    }
-
     if env.replacements.is_empty() {
         eprintln!(
             "warning: environment '{}' has no replacements defined — nothing will be changed",
@@ -31,7 +27,7 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
     }
 
     if dry_run {
-        println!("[dry-run] no files will be modified\n");
+        println!("{}", format!("[dry-run]\n").yellow());
     }
 
     let mut missing_files: Vec<String> = Vec::new();
@@ -85,9 +81,17 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
     }
 
     if dry_run && !any_change {
-        println!("No changes would be made.");
+        println!("{}", format!("{}", "✗ No changes detected".yellow()));
     } else if !dry_run {
-        println!("Switched to '{}' environment.", environment);
+        println!(
+            "{}",
+            format!(
+                "{} {} {}",
+                "✓ Switched to".green(),
+                environment.green().bold(),
+                "environment".green()
+            )
+        );
     }
 
     Ok(())

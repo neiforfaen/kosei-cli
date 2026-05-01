@@ -1,4 +1,5 @@
 use crate::error::KoseiError;
+use colored::Colorize;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
@@ -52,14 +53,17 @@ fn execute_in(start: &std::path::Path) -> Result<(), KoseiError> {
         KoseiError::FileWriteError(format!("cannot write kosei.yaml: {}", e), e.kind())
     })?;
 
-    println!("Written {}", yaml_path.display());
-
     std::fs::remove_file(&json_path).map_err(|e| {
         KoseiError::FileWriteError(format!("cannot delete kosei.config.json: {}", e), e.kind())
     })?;
 
-    println!("Deleted {}", json_path.display());
-    println!("Migration complete.");
+    println!(
+        "{}",
+        format!(
+            "{}",
+            "✓ Migration complete! kosei.yaml created and kosei.config.json deleted.".green()
+        )
+    );
 
     Ok(())
 }
