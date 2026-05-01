@@ -27,7 +27,7 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
     }
 
     if dry_run {
-        println!("{}", format!("[dry-run]\n").yellow());
+        println!("{}", "[dry-run]\n".yellow());
     }
 
     let mut missing_files: Vec<String> = Vec::new();
@@ -81,16 +81,13 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
     }
 
     if dry_run && !any_change {
-        println!("{}", format!("{}", "✗ No changes detected".yellow()));
+        println!("{}", "✗ No changes detected".yellow());
     } else if !dry_run {
         println!(
-            "{}",
-            format!(
-                "{} {} {}",
-                "✓ Switched to".green(),
-                environment.green().bold(),
-                "environment".green()
-            )
+            "{} {} {}",
+            "✓ Switched to".green(),
+            environment.green().bold(),
+            "environment".green()
         );
     }
 

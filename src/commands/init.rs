@@ -30,12 +30,9 @@ pub fn execute(path: &Option<String>) -> Result<(), KoseiError> {
     })?;
 
     println!(
-        "{}",
-        format!(
-            "{} {}",
-            "✓ kosei.yaml initialized @".green(),
-            config_path.display().to_string().bold()
-        )
+        "{} {}",
+        "✓ kosei.yaml initialized @".green(),
+        config_path.display().to_string().bold()
     );
     Ok(())
 }

@@ -59,10 +59,7 @@ fn execute_in(start: &std::path::Path) -> Result<(), KoseiError> {
 
     println!(
         "{}",
-        format!(
-            "{}",
-            "✓ Migration complete! kosei.yaml created and kosei.config.json deleted.".green()
-        )
+        "✓ Migration complete! kosei.yaml created and kosei.config.json deleted.".green()
     );
 
     Ok(())
