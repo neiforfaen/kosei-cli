@@ -25,7 +25,12 @@ struct MigrateReplacement {
 }
 
 pub fn execute() -> Result<(), KoseiError> {
-    let json_path = find_json_config()?;
+    let start = std::env::current_dir().map_err(|e| KoseiError::ConfigReadError(e.to_string()))?;
+    execute_in(&start)
+}
+
+fn execute_in(start: &std::path::Path) -> Result<(), KoseiError> {
+    let json_path = find_json_config(start)?;
     let base_dir = json_path
         .parent()
         .map(|p| p.to_path_buf())
@@ -61,9 +66,8 @@ pub fn execute() -> Result<(), KoseiError> {
     Ok(())
 }
 
-fn find_json_config() -> Result<PathBuf, KoseiError> {
-    let mut dir =
-        std::env::current_dir().map_err(|e| KoseiError::ConfigReadError(e.to_string()))?;
+fn find_json_config(start: &std::path::Path) -> Result<PathBuf, KoseiError> {
+    let mut dir = start.to_path_buf();
 
     loop {
         let candidate = dir.join("kosei.config.json");
@@ -95,13 +99,10 @@ mod tests {
 
     #[test]
     fn test_find_json_config_not_found() {
-        // Change to a temp dir that definitely has no kosei.config.json above it
+        // Use a temp dir that definitely has no kosei.config.json above it.
+        // We pass the path directly so no set_current_dir is needed.
         let temp = TempDir::new().unwrap();
-        let original = std::env::current_dir().unwrap();
-        std::env::set_current_dir(temp.path()).unwrap();
-
-        let result = find_json_config();
-        std::env::set_current_dir(original).unwrap();
+        let result = find_json_config(temp.path());
 
         assert!(result.is_err());
         match result.unwrap_err() {
@@ -164,14 +165,12 @@ mod tests {
     #[test]
     fn test_execute_migrates_and_deletes() {
         let temp = TempDir::new().unwrap();
-        let json = r#"{"environments": {"dev": {"replacements": [{"files": [".env"], "regex": "/X=.*/", "value": "X=1"}]}}}"#;
+        let json = r#"{"environments": {"dev": {"replacements": [{"files": [".env"], "regex": "/X=.*/", "value": "X=1"}]}}}
+"#;
         write_json(&temp, json);
 
-        let original = std::env::current_dir().unwrap();
-        std::env::set_current_dir(temp.path()).unwrap();
-
-        let result = execute();
-        std::env::set_current_dir(original).unwrap();
+        // Use execute_in so we don't mutate the process-wide CWD.
+        let result = execute_in(temp.path());
 
         assert!(result.is_ok(), "{:?}", result);
 
@@ -183,13 +182,10 @@ mod tests {
     #[test]
     fn test_execute_invalid_json_errors() {
         let temp = TempDir::new().unwrap();
-        write_json(&temp, "not valid json {{{");
+        write_json(&temp, "not valid json {");
 
-        let original = std::env::current_dir().unwrap();
-        std::env::set_current_dir(temp.path()).unwrap();
-
-        let result = execute();
-        std::env::set_current_dir(original).unwrap();
+        // Use execute_in so we don't mutate the process-wide CWD.
+        let result = execute_in(temp.path());
 
         assert!(result.is_err());
         match result.unwrap_err() {
