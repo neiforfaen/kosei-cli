@@ -22,7 +22,6 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
         None => println!("Switching to '{}'", environment),
     }
 
-    // Validate that the environment has replacements defined
     if env.replacements.is_empty() {
         eprintln!(
             "warning: environment '{}' has no replacements defined — nothing will be changed",
@@ -35,7 +34,6 @@ pub fn execute(environment: &str, config: &Config, dry_run: bool) -> Result<(), 
         println!("[dry-run] no files will be modified\n");
     }
 
-    // Validate that all files for each replacement exist
     let mut missing_files: Vec<String> = Vec::new();
     for replacement in &env.replacements {
         for file in &replacement.files {
@@ -202,7 +200,6 @@ mod tests {
         );
         let config = create_test_config(&temp_dir, envs);
 
-        // Missing files cause the command to fail
         let result = execute("test", &config, false);
         assert!(result.is_err());
 
@@ -270,11 +267,9 @@ mod tests {
         );
         let config = create_test_config(&temp_dir, envs);
 
-        // Should fail if any file is missing - prevents partial edits
         let result = execute("test", &config, false);
         assert!(result.is_err());
 
-        // Verify existing file was NOT modified
         let content = fs::read_to_string(&existing_file).unwrap();
         assert_eq!(content, "content");
     }
@@ -293,7 +288,6 @@ mod tests {
         );
         let config = create_test_config(&temp_dir, envs);
 
-        // Should fail when all files are missing
         let result = execute("test", &config, false);
         assert!(result.is_err());
     }
@@ -315,11 +309,9 @@ mod tests {
         );
         let config = create_test_config(&temp_dir, envs);
 
-        // Should fail even in dry-run if files are missing
         let result = execute("test", &config, true);
         assert!(result.is_err());
 
-        // File should not be modified
         let content = fs::read_to_string(&existing_file).unwrap();
         assert_eq!(content, "content");
     }

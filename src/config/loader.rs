@@ -42,7 +42,6 @@ impl ConfigLoader {
         let raw: RawConfig =
             serde_yaml::from_str(&file).map_err(|e| KoseiError::ConfigParseError(e.to_string()))?;
 
-        // Validate all regexes in all environments
         for (env_name, environment) in &raw.environments {
             for (replacement_idx, replacement) in environment.replacements.iter().enumerate() {
                 if replacement.files.is_empty() {

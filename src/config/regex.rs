@@ -39,21 +39,9 @@ pub fn build_regex(pattern: &str, flags: &str) -> Result<regex::Regex, KoseiErro
 
     for ch in flags.chars() {
         match ch {
-            // Silently ignore these flags for backward compatibility
-            'g' => {
-                // Global flag: Rust's replace_all already replaces all occurrences globally,
-                // so this flag is not needed and is safely ignored for configs created
-                // with the TypeScript version.
-            }
-            'u' => {
-                // Unicode flag: Unicode handling is implicit in Rust regexes,
-                // so this flag is not needed and is safely ignored.
-            }
-            'y' => {
-                // Sticky flag: The sticky flag doesn't apply to replace_all semantics,
-                // so this flag is not needed and is safely ignored.
-            }
-            // Actively supported flags
+            'g' => {}
+            'u' => {}
+            'y' => {}
             'i' => {
                 builder.case_insensitive(true);
             }

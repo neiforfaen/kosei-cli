@@ -3,8 +3,6 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::PathBuf;
 
-// Mirror the config shape with both Deserialize and Serialize so we can
-// round-trip from JSON -> YAML without touching the main config module.
 #[derive(Deserialize, Serialize)]
 struct MigrateConfig {
     environments: HashMap<String, MigrateEnvironment>,
@@ -99,8 +97,6 @@ mod tests {
 
     #[test]
     fn test_find_json_config_not_found() {
-        // Use a temp dir that definitely has no kosei.config.json above it.
-        // We pass the path directly so no set_current_dir is needed.
         let temp = TempDir::new().unwrap();
         let result = find_json_config(temp.path());
 
@@ -140,11 +136,9 @@ mod tests {
 
         let json_path = write_json(&temp, json);
 
-        // Parse and re-serialize
         let config: MigrateConfig = serde_json::from_str(json).unwrap();
         let yaml = serde_yaml::to_string(&config).unwrap();
 
-        // Verify the YAML round-trips back to the same data
         let reparsed: MigrateConfig = serde_yaml::from_str(&yaml).unwrap();
         assert!(reparsed.environments.contains_key("dev"));
         assert!(reparsed.environments.contains_key("prod"));
@@ -158,7 +152,6 @@ mod tests {
         assert!(prod.description.is_none());
         assert_eq!(prod.replacements[0].files, vec![".env", "config.js"]);
 
-        // Cleanup (json_path still exists since we didn't call execute)
         drop(json_path);
     }
 
@@ -169,12 +162,10 @@ mod tests {
 "#;
         write_json(&temp, json);
 
-        // Use execute_in so we don't mutate the process-wide CWD.
         let result = execute_in(temp.path());
 
         assert!(result.is_ok(), "{:?}", result);
 
-        // kosei.yaml should exist, kosei.config.json should be gone
         assert!(temp.path().join("kosei.yaml").exists());
         assert!(!temp.path().join("kosei.config.json").exists());
     }
@@ -184,7 +175,6 @@ mod tests {
         let temp = TempDir::new().unwrap();
         write_json(&temp, "not valid json {");
 
-        // Use execute_in so we don't mutate the process-wide CWD.
         let result = execute_in(temp.path());
 
         assert!(result.is_err());
