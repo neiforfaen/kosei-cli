@@ -1,3 +1,4 @@
 /target
 kosei.yaml
 .env*
+node_modules/
